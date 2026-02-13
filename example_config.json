@@ -1,0 +1,13 @@
+{
+  "server_address": "example.com",
+  "port": 443,
+  "uuid": "00000000-0000-0000-0000-000000000000",
+  "flow": "xtls-rprx-vision",
+  "encryption": "none",
+  "public_key": "your-public-key-here",
+  "short_id": "your-short-id",
+  "sni": "example.com",
+  "fingerprint": "chrome",
+  "spider_x": "",
+  "name": "Example Server"
+}
