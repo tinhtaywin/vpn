@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_glow/flutter_glow.dart';
 import '../theme/app_theme.dart';
 
 class NeonLoadingSpinner extends StatelessWidget {
@@ -9,12 +8,12 @@ class NeonLoadingSpinner extends StatelessWidget {
   final double strokeWidth;
 
   const NeonLoadingSpinner({
-    Key? key,
+    super.key,
     this.size = 40,
     this.color,
     this.text,
     this.strokeWidth = 4,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +22,25 @@ class NeonLoadingSpinner extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        GlowCircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(spinnerColor),
-          backgroundColor: AppTheme.borderColor,
-          strokeWidth: strokeWidth,
-          size: size,
-          glowRadius: 15,
-          glowColor: spinnerColor.withOpacity(0.5),
+        Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            color: AppTheme.cardColor,
+            borderRadius: BorderRadius.circular(size / 2),
+            boxShadow: [
+              BoxShadow(
+                color: spinnerColor.withOpacity(0.5),
+                blurRadius: 15,
+                spreadRadius: 0,
+                offset: Offset(0, 0),
+              ),
+            ],
+          ),
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(spinnerColor),
+            strokeWidth: strokeWidth,
+          ),
         ),
         if (text != null) ...[
           const SizedBox(height: 16),
@@ -52,14 +63,14 @@ class NeonShimmer extends StatelessWidget {
   final Duration? duration;
 
   const NeonShimmer({
-    Key? key,
+    super.key,
     required this.child,
     required this.width,
     required this.height,
     this.baseColor,
     this.highlightColor,
     this.duration,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -67,19 +78,23 @@ class NeonShimmer extends StatelessWidget {
     final highlightColorColor = highlightColor ?? AppTheme.primaryColor.withOpacity(0.3);
     final animationDuration = duration ?? const Duration(milliseconds: 1500);
 
-    return Shimmer.fromColors(
-      baseColor: baseColorColor,
-      highlightColor: highlightColorColor,
-      period: animationDuration,
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: baseColorColor,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: child,
+    return AnimatedContainer(
+      duration: animationDuration,
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: baseColorColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: highlightColorColor,
+            blurRadius: 10,
+            spreadRadius: 0,
+            offset: Offset(0, 0),
+          ),
+        ],
       ),
+      child: child,
     );
   }
 }
@@ -91,12 +106,12 @@ class Shimmer extends StatefulWidget {
   final Duration period;
 
   const Shimmer({
-    Key? key,
+    super.key,
     required this.child,
     required this.baseColor,
     required this.highlightColor,
     required this.period,
-  }) : super(key: key);
+  });
 
   static ShimmerState of(BuildContext context) {
     return context.findAncestorStateOfType<ShimmerState>()!;
@@ -139,12 +154,12 @@ class NeonSkeleton extends StatelessWidget {
   final Color? color;
 
   const NeonSkeleton({
-    Key? key,
+    super.key,
     required this.width,
     required this.height,
     this.borderRadius = 8,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -176,12 +191,12 @@ class NeonPlaceholder extends StatelessWidget {
   final VoidCallback? onRetry;
 
   const NeonPlaceholder({
-    Key? key,
+    super.key,
     required this.message,
     this.icon,
     this.iconColor,
     this.onRetry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -192,12 +207,26 @@ class NeonPlaceholder extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (icon != null)
-            GlowIcon(
-              icon!,
-              size: 64,
-              glowColor: iconColorColor.withOpacity(0.5),
-              glowRadius: 20,
-              color: iconColorColor,
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: iconColorColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(32),
+                boxShadow: [
+                  BoxShadow(
+                    color: iconColorColor.withOpacity(0.5),
+                    blurRadius: 20,
+                    spreadRadius: 0,
+                    offset: Offset(0, 0),
+                  ),
+                ],
+              ),
+              child: Icon(
+                icon!,
+                size: 48,
+                color: iconColorColor,
+              ),
             ),
           const SizedBox(height: 16),
           Text(
@@ -207,11 +236,24 @@ class NeonPlaceholder extends StatelessWidget {
           ),
           if (onRetry != null) ...[
             const SizedBox(height: 16),
-            NeonButton(
-              text: 'Try Again',
+            ElevatedButton(
               onPressed: onRetry!,
-              color: AppTheme.primaryColor,
-              icon: Icons.refresh,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: AppTheme.backgroundColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.refresh, size: 18),
+                  const SizedBox(width: 8),
+                  Text('Try Again'),
+                ],
+              ),
             ),
           ],
         ],
@@ -227,68 +269,90 @@ class NeonErrorWidget extends StatelessWidget {
   final VoidCallback? onDismiss;
 
   const NeonErrorWidget({
-    Key? key,
+    super.key,
     required this.message,
     this.details,
     this.onRetry,
     this.onDismiss,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return NeonCard(
-      isGlowing: true,
-      glowColor: Colors.red,
+    return Container(
       margin: EdgeInsets.all(16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.error,
-                  color: Colors.red,
-                  size: 24,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Error',
-                  style: AppTheme.neonSubtitle,
-                ),
-                const Spacer(),
-                if (onDismiss != null)
-                  NeonIconButton(
-                    icon: Icons.close,
-                    onPressed: onDismiss!,
-                    size: 32,
-                  ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              message,
-              style: AppTheme.neonBody,
-            ),
-            if (details != null) ...[
-              const SizedBox(height: 8),
-              Text(
-                details!,
-                style: AppTheme.neonSecondary,
-              ),
-            ],
-            if (onRetry != null) ...[
-              const SizedBox(height: 16),
-              NeonButton(
-                text: 'Retry',
-                onPressed: onRetry!,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.red, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.red.withOpacity(0.3),
+            blurRadius: 20,
+            spreadRadius: 0,
+            offset: Offset(0, 0),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.error,
                 color: Colors.red,
-                icon: Icons.refresh,
+                size: 24,
               ),
+              const SizedBox(width: 8),
+              Text(
+                'Error',
+                style: AppTheme.neonSubtitle,
+              ),
+              const Spacer(),
+              if (onDismiss != null)
+                IconButton(
+                  icon: Icon(Icons.close, color: Colors.red),
+                  onPressed: onDismiss!,
+                  iconSize: 32,
+                ),
             ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            message,
+            style: AppTheme.neonBody,
+          ),
+          if (details != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              details!,
+              style: AppTheme.neonSecondary,
+            ),
           ],
-        ),
+          if (onRetry != null) ...[
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: onRetry!,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: AppTheme.backgroundColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.refresh, size: 18),
+                  const SizedBox(width: 8),
+                  Text('Retry'),
+                ],
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

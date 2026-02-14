@@ -6,10 +6,10 @@ import '../theme/app_theme.dart';
 import '../widgets/connection_status_indicator.dart';
 import '../widgets/traffic_display.dart';
 import '../widgets/neon_button.dart';
-import '../widgets/neon_card.dart';
+
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -94,8 +94,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           glowColor: AppTheme.primaryColor,
         ),
         actions: [
-          NeonIconButton(
-            icon: Icons.settings,
+          IconButton(
+            icon: Icon(Icons.settings, color: AppTheme.primaryColor),
             onPressed: () {
               Navigator.pushNamed(context, '/settings');
             },
@@ -133,8 +133,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     
                     // Server Information
                     if (status.serverName.isNotEmpty)
-                      NeonCard(
+                      Container(
                         padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppTheme.cardColor,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppTheme.borderColor, width: 1),
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -231,19 +236,51 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        NeonToggleButton(
-                          text: 'Split Tunnel',
-                          isSelected: vpnProvider.allowedApps.isNotEmpty,
+                        ElevatedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/split-tunneling');
                           },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: vpnProvider.allowedApps.isNotEmpty 
+                                ? AppTheme.primaryColor 
+                                : AppTheme.cardColor,
+                            foregroundColor: vpnProvider.allowedApps.isNotEmpty 
+                                ? AppTheme.backgroundColor 
+                                : AppTheme.primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(
+                                color: vpnProvider.allowedApps.isNotEmpty 
+                                    ? AppTheme.primaryColor 
+                                    : AppTheme.borderColor,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          ),
+                          child: Text('Split Tunnel'),
                         ),
-                        NeonToggleButton(
-                          text: 'Server Config',
-                          isSelected: vpnProvider.currentServer != null,
+                        ElevatedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/server-config');
                           },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: vpnProvider.currentServer != null 
+                                ? AppTheme.primaryColor 
+                                : AppTheme.cardColor,
+                            foregroundColor: vpnProvider.currentServer != null 
+                                ? AppTheme.backgroundColor 
+                                : AppTheme.primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(
+                                color: vpnProvider.currentServer != null 
+                                    ? AppTheme.primaryColor 
+                                    : AppTheme.borderColor,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          ),
+                          child: Text('Server Config'),
                         ),
                       ],
                     ),

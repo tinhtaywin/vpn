@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_glow/flutter_glow.dart';
 import '../models/traffic_stats.dart';
 import '../theme/app_theme.dart';
+import 'neon_card_stub.dart';
+import 'dart:math' as math;
+import 'dart:async';
 
 class TrafficDisplay extends StatelessWidget {
   final int uploadBytes;
@@ -10,12 +12,12 @@ class TrafficDisplay extends StatelessWidget {
   final double height;
 
   const TrafficDisplay({
-    Key? key,
+    super.key,
     required this.uploadBytes,
     required this.downloadBytes,
     this.showDetails = true,
     this.height = 120,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,35 +25,36 @@ class TrafficDisplay extends StatelessWidget {
     final downloadFormatted = _formatBytes(downloadBytes);
     final totalFormatted = _formatBytes(uploadBytes + downloadBytes);
 
-    return NeonCard(
-      isGlowing: uploadBytes > 0 || downloadBytes > 0,
+    return SizedBox(
       height: height,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (showDetails) ...[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildTrafficItem(Icons.upload, 'Upload', uploadFormatted, AppTheme.primaryColor),
-                _buildTrafficItem(Icons.download, 'Download', downloadFormatted, AppTheme.secondaryColor),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Divider(color: AppTheme.borderColor, height: 1),
-            const SizedBox(height: 16),
-            _buildTrafficItem(Icons.data_usage, 'Total', totalFormatted, AppTheme.accentColor),
-          ] else ...[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildSimpleTrafficItem(Icons.upload, uploadFormatted, AppTheme.primaryColor),
-                const SizedBox(width: 24),
-                _buildSimpleTrafficItem(Icons.download, downloadFormatted, AppTheme.secondaryColor),
-              ],
-            ),
+      child: NeonCard(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (showDetails) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildTrafficItem(Icons.upload, 'Upload', uploadFormatted, AppTheme.primaryColor),
+                  _buildTrafficItem(Icons.download, 'Download', downloadFormatted, AppTheme.secondaryColor),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Divider(color: AppTheme.borderColor, height: 1),
+              const SizedBox(height: 16),
+              _buildTrafficItem(Icons.data_usage, 'Total', totalFormatted, AppTheme.accentColor),
+            ] else ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildSimpleTrafficItem(Icons.upload, uploadFormatted, AppTheme.primaryColor),
+                  const SizedBox(width: 24),
+                  _buildSimpleTrafficItem(Icons.download, downloadFormatted, AppTheme.secondaryColor),
+                ],
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -115,12 +118,12 @@ class AnimatedTrafficBar extends StatelessWidget {
   final Color downloadColor;
 
   const AnimatedTrafficBar({
-    Key? key,
+    super.key,
     required this.uploadProgress,
     required this.downloadProgress,
     this.uploadColor = AppTheme.primaryColor,
     this.downloadColor = AppTheme.secondaryColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -160,17 +163,12 @@ class AnimatedTrafficBar extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 6),
-        GlowContainer(
-          color: Colors.transparent,
-          glowColor: color.withOpacity(0.3),
-          glowRadius: 10,
-          child: LinearProgressIndicator(
-            value: progress.clamp(0.0, 1.0),
-            backgroundColor: AppTheme.borderColor,
-            valueColor: AlwaysStoppedAnimation<Color>(color),
-            minHeight: 8,
-            borderRadius: BorderRadius.circular(4),
-          ),
+        LinearProgressIndicator(
+          value: progress.clamp(0.0, 1.0),
+          backgroundColor: AppTheme.borderColor,
+          valueColor: AlwaysStoppedAnimation<Color>(color),
+          minHeight: 8,
+          borderRadius: BorderRadius.circular(4),
         ),
       ],
     );
@@ -183,11 +181,11 @@ class TrafficHistoryChart extends StatelessWidget {
   final bool isHourly;
 
   const TrafficHistoryChart({
-    Key? key,
+    super.key,
     required this.hourlyStats,
     required this.dailyStats,
     this.isHourly = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -242,16 +240,11 @@ class TrafficHistoryChart extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  GlowContainer(
-                    color: Colors.transparent,
-                    glowColor: AppTheme.primaryColor.withOpacity(0.3),
-                    glowRadius: 5,
-                    child: Container(
-                      height: height.max(10),
-                      decoration: BoxDecoration(
-                        gradient: AppTheme.cyanGradient,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
+                  Container(
+                    height: math.max(height, 10),
+                    decoration: BoxDecoration(
+                      gradient: AppTheme.cyanGradient,
+                      borderRadius: BorderRadius.circular(4),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -274,10 +267,10 @@ class RealTimeTrafficMonitor extends StatefulWidget {
   final Duration updateInterval;
 
   const RealTimeTrafficMonitor({
-    Key? key,
+    super.key,
     required this.trafficStream,
     this.updateInterval = const Duration(seconds: 1),
-  }) : super(key: key);
+  });
 
   @override
   _RealTimeTrafficMonitorState createState() => _RealTimeTrafficMonitorState();

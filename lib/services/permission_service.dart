@@ -1,107 +1,74 @@
-import 'package:permission_handler/permission_handler.dart';
+import 'dart:async';
+import 'dart:io' show Platform;
 
 class PermissionService {
   
-  // Request VPN permission
+  // Request VPN permission - stub implementation
   Future<bool> requestVpnPermission() async {
     try {
-      // VPN permission is handled by the Android system
-      // We just need to check if it's granted
-      final status = await Permission.vpn.status;
-      
-      if (status.isGranted) {
-        return true;
-      } else if (status.isDenied) {
-        // Request permission
-        final result = await Permission.vpn.request();
-        return result.isGranted;
-      } else if (status.isPermanentlyDenied) {
-        // Permission is permanently denied, open app settings
-        openAppSettings();
-        return false;
+      // VPN permission is only available on Android
+      if (!Platform.isAndroid) {
+        return true; // Skip VPN permission on non-Android platforms
       }
       
-      return false;
+      // Stub - in production, use permission_handler
+      return true;
     } catch (e) {
       print('Error requesting VPN permission: $e');
       return false;
     }
   }
 
-  // Request storage permissions for file operations
+  // Request storage permissions for file operations - stub implementation
   Future<bool> requestStoragePermissions() async {
     try {
-      final status = await Permission.storage.status;
-      
-      if (status.isGranted) {
-        return true;
-      } else {
-        final result = await Permission.storage.request();
-        return result.isGranted;
-      }
+      // Stub - in production, use permission_handler
+      return true;
     } catch (e) {
       print('Error requesting storage permissions: $e');
       return false;
     }
   }
 
-  // Request network state permissions
+  // Request network state permissions - stub implementation
   Future<bool> requestNetworkPermissions() async {
     try {
-      final wifiStatus = await Permission.accessWifiState.status;
-      final networkStatus = await Permission.accessNetworkState.status;
-      
-      bool wifiGranted = wifiStatus.isGranted;
-      bool networkGranted = networkStatus.isGranted;
-      
-      if (!wifiGranted) {
-        final wifiResult = await Permission.accessWifiState.request();
-        wifiGranted = wifiResult.isGranted;
+      if (!Platform.isAndroid) {
+        return true; // Skip network permissions on non-Android platforms
       }
       
-      if (!networkGranted) {
-        final networkResult = await Permission.accessNetworkState.request();
-        networkGranted = networkResult.isGranted;
-      }
-      
-      return wifiGranted && networkGranted;
+      // Stub - in production, use permission_handler
+      return true;
     } catch (e) {
       print('Error requesting network permissions: $e');
       return false;
     }
   }
 
-  // Check if all required permissions are granted
+  // Check if all required permissions are granted - stub implementation
   Future<bool> checkAllPermissions() async {
     try {
-      final vpnStatus = await Permission.vpn.status;
-      final storageStatus = await Permission.storage.status;
-      final wifiStatus = await Permission.accessWifiState.status;
-      final networkStatus = await Permission.accessNetworkState.status;
+      if (!Platform.isAndroid) {
+        return true; // Skip permission checks on non-Android platforms
+      }
       
-      return vpnStatus.isGranted && 
-             storageStatus.isGranted && 
-             wifiStatus.isGranted && 
-             networkStatus.isGranted;
+      // Stub - in production, use permission_handler
+      return true;
     } catch (e) {
       print('Error checking permissions: $e');
       return false;
     }
   }
 
-  // Request all required permissions
+  // Request all required permissions - stub implementation
   Future<Map<String, bool>> requestAllPermissions() async {
     final results = <String, bool>{};
     
     try {
-      // Request VPN permission
-      results['vpn'] = await requestVpnPermission();
-      
-      // Request storage permission
-      results['storage'] = await requestStoragePermissions();
-      
-      // Request network permissions
-      results['network'] = await requestNetworkPermissions();
+      // Stub - in production, use permission_handler
+      results['vpn'] = true;
+      results['storage'] = true;
+      results['network'] = true;
       
     } catch (e) {
       print('Error requesting permissions: $e');
@@ -113,11 +80,11 @@ class PermissionService {
     return results;
   }
 
-  // Check if a specific permission is granted
-  Future<bool> isPermissionGranted(Permission permission) async {
+  // Check if a specific permission is granted - stub implementation
+  Future<bool> isPermissionGranted(String permission) async {
     try {
-      final status = await permission.status;
-      return status.isGranted;
+      // Stub - in production, use permission_handler
+      return true;
     } catch (e) {
       print('Error checking permission: $e');
       return false;
@@ -127,21 +94,24 @@ class PermissionService {
   // Open app settings to allow user to grant permissions manually
   Future<void> openAppSettings() async {
     try {
-      await openAppSettings();
+      // Stub - in production, use permission_handler
     } catch (e) {
       print('Error opening app settings: $e');
     }
   }
 
-  // Get permission status for display purposes
-  Future<Map<String, PermissionStatus>> getPermissionStatuses() async {
-    final statuses = <String, PermissionStatus>{};
+  // Get permission status for display purposes - stub implementation
+  Future<Map<String, String>> getPermissionStatuses() async {
+    final statuses = <String, String>{};
     
     try {
-      statuses['vpn'] = await Permission.vpn.status;
-      statuses['storage'] = await Permission.storage.status;
-      statuses['wifi'] = await Permission.accessWifiState.status;
-      statuses['network'] = await Permission.accessNetworkState.status;
+      if (Platform.isAndroid) {
+        // Stub - in production, use permission_handler
+        statuses['vpn'] = 'granted';
+        statuses['storage'] = 'granted';
+        statuses['wifi'] = 'granted';
+        statuses['network'] = 'granted';
+      }
     } catch (e) {
       print('Error getting permission statuses: $e');
     }

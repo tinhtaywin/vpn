@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_glow/flutter_glow.dart';
 import '../theme/app_theme.dart';
+import 'neon_card_stub.dart';
 
 class AppSelectorHeader extends StatelessWidget {
   final int totalApps;
@@ -11,21 +11,20 @@ class AppSelectorHeader extends StatelessWidget {
   final bool isAllSelected;
 
   const AppSelectorHeader({
-    Key? key,
+    super.key,
     required this.totalApps,
     required this.selectedApps,
     required this.showSystemApps,
     required this.onShowSystemAppsChanged,
     required this.onSelectAllChanged,
     required this.isAllSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return NeonCard(
-      margin: EdgeInsets.all(8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: NeonCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -43,12 +42,16 @@ class AppSelectorHeader extends StatelessWidget {
                       style: AppTheme.neonSecondary,
                     ),
                     const SizedBox(width: 16),
-                    GlowButton(
+                    ElevatedButton(
                       onPressed: () => onSelectAllChanged(!isAllSelected),
-                      color: isAllSelected ? AppTheme.secondaryColor : AppTheme.primaryColor,
-                      glowColor: isAllSelected ? AppTheme.secondaryColor.withOpacity(0.5) : AppTheme.primaryColor.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(8),
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isAllSelected ? AppTheme.secondaryColor : AppTheme.primaryColor,
+                        foregroundColor: AppTheme.backgroundColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      ),
                       child: Text(
                         isAllSelected ? 'Deselect All' : 'Select All',
                         style: AppTheme.neonSecondary.copyWith(
@@ -65,15 +68,11 @@ class AppSelectorHeader extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                GlowCheckbox(
+                Checkbox(
                   value: showSystemApps,
-                  onChanged: onShowSystemAppsChanged,
+                  onChanged: (bool? value) => onShowSystemAppsChanged(value ?? false),
                   activeColor: AppTheme.accentColor,
                   checkColor: AppTheme.backgroundColor,
-                  side: BorderSide(color: AppTheme.borderColor, width: 2),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                  glowRadius: showSystemApps ? 10 : 0,
-                  glowColor: AppTheme.accentColor.withOpacity(0.5),
                 ),
                 const SizedBox(width: 8),
                 Text(

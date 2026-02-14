@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_glow/flutter_glow.dart';
 import '../models/vpn_status.dart';
 import '../theme/app_theme.dart';
 
@@ -9,11 +8,11 @@ class ConnectionStatusIndicator extends StatefulWidget {
   final bool showText;
 
   const ConnectionStatusIndicator({
-    Key? key,
+    super.key,
     required this.status,
     this.size = 40,
     this.showText = true,
-  }) : super(key: key);
+  });
 
   @override
   _ConnectionStatusIndicatorState createState() => _ConnectionStatusIndicatorState();
@@ -175,12 +174,26 @@ class _ConnectionStatusIndicatorState extends State<ConnectionStatusIndicator> w
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        GlowIcon(
-          statusIcon,
-          size: widget.size,
-          glowColor: statusColor.withOpacity(0.5),
-          glowRadius: 20,
-          color: statusColor,
+        Container(
+          width: widget.size,
+          height: widget.size,
+          decoration: BoxDecoration(
+            color: statusColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(widget.size / 2),
+            boxShadow: [
+              BoxShadow(
+                color: statusColor.withOpacity(0.5),
+                blurRadius: 20,
+                spreadRadius: 0,
+                offset: Offset(0, 0),
+              ),
+            ],
+          ),
+          child: Icon(
+            statusIcon,
+            size: widget.size * 0.8,
+            color: statusColor,
+          ),
         ),
         if (widget.showText) ...[
           const SizedBox(height: 8),
@@ -202,10 +215,10 @@ class PulsingConnectionIndicator extends StatelessWidget {
   final double size;
 
   const PulsingConnectionIndicator({
-    Key? key,
+    super.key,
     required this.status,
     this.size = 60,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_glow/flutter_glow.dart';
 
 class AppTheme {
   // Neon Color Palette
@@ -85,32 +84,32 @@ class AppTheme {
 
   // Button Styles
   static ButtonStyle get neonButtonStyle => ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(primaryColor),
-        foregroundColor: MaterialStateProperty.all(backgroundColor),
-        elevation: MaterialStateProperty.all(0),
-        shape: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(primaryColor),
+        foregroundColor: WidgetStateProperty.all(backgroundColor),
+        elevation: WidgetStateProperty.all(0),
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        overlayColor: MaterialStateProperty.all(primaryColor.withOpacity(0.2)),
-        shadowColor: MaterialStateProperty.all(primaryColor),
-        surfaceTintColor: MaterialStateProperty.all(Colors.transparent),
+        overlayColor: WidgetStateProperty.all(primaryColor.withOpacity(0.2)),
+        shadowColor: WidgetStateProperty.all(primaryColor),
+        surfaceTintColor: WidgetStateProperty.all(Colors.transparent),
       );
 
   static ButtonStyle get secondaryButtonStyle => ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.transparent),
-        foregroundColor: MaterialStateProperty.all(primaryColor),
-        elevation: MaterialStateProperty.all(0),
-        shape: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(Colors.transparent),
+        foregroundColor: WidgetStateProperty.all(primaryColor),
+        elevation: WidgetStateProperty.all(0),
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(color: primaryColor, width: 2),
           ),
         ),
-        overlayColor: MaterialStateProperty.all(primaryColor.withOpacity(0.1)),
-        shadowColor: MaterialStateProperty.all(Colors.transparent),
-        surfaceTintColor: MaterialStateProperty.all(Colors.transparent),
+        overlayColor: WidgetStateProperty.all(primaryColor.withOpacity(0.1)),
+        shadowColor: WidgetStateProperty.all(Colors.transparent),
+        surfaceTintColor: WidgetStateProperty.all(Colors.transparent),
       );
 
   // Input Field Styles
@@ -195,12 +194,10 @@ class AppTheme {
         primary: primaryColor,
         secondary: secondaryColor,
         surface: cardColor,
-        background: backgroundColor,
         error: Colors.red,
         onPrimary: backgroundColor,
         onSecondary: backgroundColor,
         onSurface: textColor,
-        onBackground: textColor,
         onError: Colors.white,
       );
 
@@ -227,21 +224,20 @@ class AppTheme {
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: secondaryButtonStyle,
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: cardColor,
           elevation: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           margin: EdgeInsets.all(8),
         ),
         dividerColor: borderColor,
-        dialogBackgroundColor: cardColor,
         bottomSheetTheme: BottomSheetThemeData(
           backgroundColor: backgroundColor,
           modalBackgroundColor: backgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
           ),
-        ),
+        ), dialogTheme: DialogThemeData(backgroundColor: cardColor),
       );
 
   // Custom Glow Widget
@@ -252,12 +248,9 @@ class AppTheme {
     double glowRadius = 20,
     TextAlign? textAlign,
   }) {
-    return GlowText(
+    return Text(
       text,
       style: style ?? neonTitle,
-      glowColor: glowColor ?? primaryColor,
-      glowRadius: glowRadius,
-      textAlign: textAlign,
     );
   }
 
@@ -269,13 +262,14 @@ class AppTheme {
     EdgeInsetsGeometry? margin,
     BorderRadius? borderRadius,
   }) {
-    return GlowContainer(
-      color: backgroundColor,
-      glowColor: glowColor ?? primaryColor,
-      glowRadius: glowRadius,
+    return Container(
       padding: padding ?? EdgeInsets.all(16),
       margin: margin ?? EdgeInsets.all(8),
-      borderRadius: borderRadius ?? BorderRadius.circular(16),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: borderRadius ?? BorderRadius.circular(16),
+        border: Border.all(color: borderColor, width: 1),
+      ),
       child: child,
     );
   }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
+import 'screens/server_config_screen.dart';
+import 'screens/split_tunneling_screen.dart';
+import 'screens/settings_screen.dart';
 import 'providers/vpn_provider.dart';
 import 'providers/settings_provider.dart';
 import 'services/vpn_service.dart';
@@ -19,7 +22,7 @@ void main() {
               VpnService(),
         ),
         ChangeNotifierProxyProvider<VpnService, VpnProvider>(
-          create: null,
+          create: (_) => VpnProvider(VpnService(), StorageService(), PermissionService()),
           update: (context, vpnService, previous) =>
               previous ?? VpnProvider(vpnService, context.read<StorageService>(), context.read<PermissionService>()),
         ),
@@ -46,7 +49,7 @@ class VpnApp extends StatelessWidget {
         '/home': (context) => const HomeScreen(),
         '/server-config': (context) => const ServerConfigScreen(),
         '/split-tunneling': (context) => const SplitTunnelingScreen(),
-        '/settings': (context) => const SettingsScreen(),
+        '/settings': (context) => SettingsScreen(),
       },
     );
   }
@@ -110,19 +113,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   child: child,
                 );
               },
-              child: AppTheme.buildGlowingText(
+              child: Text(
                 'VLESS VPN',
                 style: AppTheme.neonTitle.copyWith(fontSize: 48),
-                glowColor: AppTheme.primaryColor,
-                glowRadius: 30,
               ),
             ),
             const SizedBox(height: 16),
-            AppTheme.buildGlowingText(
+            Text(
               'Secure • Fast • Neon',
               style: AppTheme.neonSecondary,
-              glowColor: AppTheme.secondaryColor,
-              glowRadius: 10,
             ),
             const SizedBox(height: 40),
             const CircularProgressIndicator(

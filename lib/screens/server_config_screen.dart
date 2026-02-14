@@ -4,11 +4,10 @@ import '../models/server_config.dart';
 import '../providers/vpn_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/neon_button.dart';
-import '../widgets/neon_card.dart';
 import '../widgets/neon_text_field.dart';
 
 class ServerConfigScreen extends StatefulWidget {
-  const ServerConfigScreen({Key? key}) : super(key: key);
+  const ServerConfigScreen({super.key});
 
   @override
   _ServerConfigScreenState createState() => _ServerConfigScreenState();
@@ -60,13 +59,13 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
       _serverAddressController.text = currentServer.serverAddress;
       _portController.text = currentServer.port.toString();
       _uuidController.text = currentServer.uuid;
-      _publicKeyController.text = currentServer.publicKey;
-      _shortIdController.text = currentServer.shortId;
-      _sniController.text = currentServer.sni;
-      _spiderXController.text = currentServer.spiderX;
-      _flow = currentServer.flow;
-      _encryption = currentServer.encryption;
-      _fingerprint = currentServer.fingerprint;
+      _publicKeyController.text = currentServer.publicKey ?? '';
+      _shortIdController.text = currentServer.shortId ?? '';
+      _sniController.text = currentServer.sni ?? '';
+      _spiderXController.text = currentServer.spiderX ?? '';
+      _flow = currentServer.flow ?? 'none';
+      _encryption = currentServer.encryption ?? 'none';
+      _fingerprint = currentServer.fingerprint ?? 'chrome';
     }
   }
 
@@ -219,8 +218,8 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
           style: AppTheme.neonTitle.copyWith(fontSize: 20),
         ),
         actions: [
-          NeonIconButton(
-            icon: Icons.save,
+          IconButton(
+            icon: Icon(Icons.save, color: AppTheme.primaryColor),
             onPressed: _saveServer,
             tooltip: 'Save',
           ),
@@ -313,39 +312,123 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
                 ),
                 const SizedBox(height: 12),
                 
-                NeonDropdownField(
-                  label: 'Flow',
-                  value: _flow,
-                  items: ['none', 'xtls-rprx-vision'],
-                  onChanged: (value) {
-                    setState(() {
-                      _flow = value ?? 'none';
-                    });
-                  },
+                Container(
+                  margin: EdgeInsets.only(bottom: 12),
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppTheme.cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppTheme.borderColor, width: 1),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Flow',
+                        style: AppTheme.neonSubtitle,
+                      ),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        value: _flow,
+                        items: ['none', 'xtls-rprx-vision'].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _flow = newValue ?? 'none';
+                          });
+                        },
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                        ),
+                        style: AppTheme.neonBody,
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 12),
                 
-                NeonDropdownField(
-                  label: 'Encryption',
-                  value: _encryption,
-                  items: ['none', 'zero'],
-                  onChanged: (value) {
-                    setState(() {
-                      _encryption = value ?? 'none';
-                    });
-                  },
+                Container(
+                  margin: EdgeInsets.only(bottom: 12),
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppTheme.cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppTheme.borderColor, width: 1),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Encryption',
+                        style: AppTheme.neonSubtitle,
+                      ),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        value: _encryption,
+                        items: ['none', 'zero'].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _encryption = newValue ?? 'none';
+                          });
+                        },
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                        ),
+                        style: AppTheme.neonBody,
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 12),
                 
-                NeonDropdownField(
-                  label: 'Fingerprint',
-                  value: _fingerprint,
-                  items: ['chrome', 'firefox', 'safari', 'edge', 'ios', 'android'],
-                  onChanged: (value) {
-                    setState(() {
-                      _fingerprint = value ?? 'chrome';
-                    });
-                  },
+                Container(
+                  margin: EdgeInsets.only(bottom: 12),
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppTheme.cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppTheme.borderColor, width: 1),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Fingerprint',
+                        style: AppTheme.neonSubtitle,
+                      ),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        value: _fingerprint,
+                        items: ['chrome', 'firefox', 'safari', 'edge', 'ios', 'android'].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _fingerprint = newValue ?? 'chrome';
+                          });
+                        },
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                        ),
+                        style: AppTheme.neonBody,
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 24),
 
@@ -386,49 +469,95 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
 
                 // Actions
                 if (_errorMessage.isNotEmpty)
-                  NeonCard(
-                    isGlowing: true,
-                    glowColor: Colors.red,
+                  Container(
                     margin: EdgeInsets.only(bottom: 16),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Text(
-                        _errorMessage,
-                        style: AppTheme.neonSecondary.copyWith(color: Colors.red),
-                      ),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppTheme.cardColor,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.red, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.red.withOpacity(0.3),
+                          blurRadius: 10,
+                          spreadRadius: 0,
+                          offset: Offset(0, 0),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      _errorMessage,
+                      style: AppTheme.neonSecondary.copyWith(color: Colors.red),
                     ),
                   ),
 
                 Row(
                   children: [
                     Expanded(
-                      child: NeonButton(
-                        text: 'Test Connection',
+                      child: ElevatedButton(
                         onPressed: _testConnection,
-                        color: AppTheme.accentColor,
-                        icon: Icons.network_check,
-                        isLoading: _isLoading,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.accentColor,
+                          foregroundColor: AppTheme.backgroundColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.network_check, size: 18),
+                            const SizedBox(width: 8),
+                            Text('Test Connection'),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: NeonButton(
-                        text: 'Save Configuration',
+                      child: ElevatedButton(
                         onPressed: _saveServer,
-                        color: AppTheme.primaryColor,
-                        icon: Icons.save,
-                        isLoading: _isLoading,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.primaryColor,
+                          foregroundColor: AppTheme.backgroundColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.save, size: 18),
+                            const SizedBox(width: 8),
+                            Text('Save Configuration'),
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 
-                NeonButton(
-                  text: 'Use Example Configuration',
+                ElevatedButton(
                   onPressed: _loadExampleConfig,
-                  color: AppTheme.secondaryColor,
-                  icon: Icons.auto_fix_high,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.secondaryColor,
+                    foregroundColor: AppTheme.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.auto_fix_high, size: 18),
+                      const SizedBox(width: 8),
+                      Text('Use Example Configuration'),
+                    ],
+                  ),
                 ),
               ],
             ),

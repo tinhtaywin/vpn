@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/app_info.dart';
@@ -8,11 +7,10 @@ import '../widgets/app_selector_item.dart';
 import '../widgets/app_selector_header.dart';
 import '../widgets/app_search_bar.dart';
 import '../widgets/neon_button.dart';
-import '../widgets/neon_card.dart';
 import '../widgets/loading_animation.dart';
 
 class SplitTunnelingScreen extends StatefulWidget {
-  const SplitTunnelingScreen({Key? key}) : super(key: key);
+  const SplitTunnelingScreen({super.key});
 
   @override
   _SplitTunnelingScreenState createState() => _SplitTunnelingScreenState();
@@ -70,10 +68,14 @@ class _SplitTunnelingScreenState extends State<SplitTunnelingScreen> {
       // Select all
       // Note: In a real implementation, you'd get all available apps from the provider
       // For now, we'll just select all currently loaded apps
-      allApps.forEach((app) => _toggleAppSelection(app));
+      for (var app in allApps) {
+        _toggleAppSelection(app);
+      }
     } else {
       // Deselect all
-      apps.forEach((app) => _toggleAppSelection(app));
+      for (var app in apps) {
+        _toggleAppSelection(app);
+      }
     }
   }
 
@@ -98,8 +100,8 @@ class _SplitTunnelingScreenState extends State<SplitTunnelingScreen> {
           style: AppTheme.neonTitle.copyWith(fontSize: 20),
         ),
         actions: [
-          NeonIconButton(
-            icon: Icons.refresh,
+          IconButton(
+            icon: Icon(Icons.refresh, color: AppTheme.primaryColor),
             onPressed: _loadApps,
             tooltip: 'Refresh Apps',
           ),
@@ -141,32 +143,45 @@ class _SplitTunnelingScreenState extends State<SplitTunnelingScreen> {
               const SizedBox(height: 12),
 
               // Mode Toggle
-              NeonCard(
+              Container(
                 margin: EdgeInsets.only(bottom: 12),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.router,
-                        color: AppTheme.primaryColor,
-                        size: 20,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppTheme.cardColor,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppTheme.borderColor, width: 1),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.router,
+                      color: AppTheme.primaryColor,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'VPN Mode:',
+                      style: AppTheme.neonSecondary,
+                    ),
+                    const Spacer(),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Toggle bypass mode
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.cardColor,
+                        foregroundColor: AppTheme.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'VPN Mode:',
+                      child: Text(
+                        'Bypass VPN',
                         style: AppTheme.neonSecondary,
                       ),
-                      const Spacer(),
-                      NeonToggleButton(
-                        text: 'Bypass VPN',
-                        isSelected: false, // This would be managed by settings
-                        onPressed: () {
-                          // Toggle bypass mode
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -177,11 +192,16 @@ class _SplitTunnelingScreenState extends State<SplitTunnelingScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            NeonLoadingSpinner(
-                              text: 'Loading apps...',
-                              size: 60,
+                            CircularProgressIndicator(
+                              color: AppTheme.primaryColor,
+                              strokeWidth: 4,
                             ),
                             const SizedBox(height: 16),
+                            Text(
+                              'Loading apps...',
+                              style: AppTheme.neonSecondary,
+                            ),
+                            const SizedBox(height: 8),
                             Text(
                               'This may take a moment',
                               style: AppTheme.neonSecondary,
@@ -190,20 +210,110 @@ class _SplitTunnelingScreenState extends State<SplitTunnelingScreen> {
                         ),
                       )
                     : _errorMessage.isNotEmpty
-                        ? NeonErrorWidget(
-                            message: _errorMessage,
-                            onRetry: _loadApps,
-                            onDismiss: () {
-                              setState(() {
-                                _errorMessage = '';
-                              });
-                            },
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                  size: 48,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  _errorMessage,
+                                  style: AppTheme.neonSecondary,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: _loadApps,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppTheme.primaryColor,
+                                        foregroundColor: AppTheme.backgroundColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.refresh, size: 18),
+                                          const SizedBox(width: 8),
+                                          Text('Retry'),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _errorMessage = '';
+                                        });
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppTheme.secondaryColor,
+                                        foregroundColor: AppTheme.primaryColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.close, size: 18),
+                                          const SizedBox(width: 8),
+                                          Text('Dismiss'),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           )
-                        : apps.isEmpty
-                            ? NeonPlaceholder(
-                                message: 'No apps found',
-                                icon: Icons.apps,
-                                onRetry: _loadApps,
+                            : apps.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.apps,
+                                      color: AppTheme.primaryColor,
+                                      size: 48,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'No apps found',
+                                      style: AppTheme.neonSecondary,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    ElevatedButton(
+                                      onPressed: _loadApps,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppTheme.primaryColor,
+                                        foregroundColor: AppTheme.backgroundColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.refresh, size: 18),
+                                          const SizedBox(width: 8),
+                                          Text('Retry'),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               )
                             : AppSelectorList(
                                 apps: apps,
@@ -220,8 +330,7 @@ class _SplitTunnelingScreenState extends State<SplitTunnelingScreen> {
 
               // Save Button
               const SizedBox(height: 12),
-              NeonButton(
-                text: 'Save Selection',
+              ElevatedButton(
                 onPressed: () {
                   final vpnProvider = Provider.of<VpnProvider>(context, listen: false);
                   vpnProvider.setAllowedApps(selectedApps);
@@ -238,8 +347,22 @@ class _SplitTunnelingScreenState extends State<SplitTunnelingScreen> {
                   
                   Navigator.pop(context);
                 },
-                color: AppTheme.primaryColor,
-                icon: Icons.save,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  foregroundColor: AppTheme.backgroundColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.save, size: 18),
+                    const SizedBox(width: 8),
+                    Text('Save Selection'),
+                  ],
+                ),
               ),
             ],
           ),

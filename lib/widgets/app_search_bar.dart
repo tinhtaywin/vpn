@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_glow/flutter_glow.dart';
 import '../theme/app_theme.dart';
+import 'neon_card_stub.dart';
 
 class AppSearchBar extends StatelessWidget {
   final String query;
@@ -8,18 +8,17 @@ class AppSearchBar extends StatelessWidget {
   final VoidCallback onClear;
 
   const AppSearchBar({
-    Key? key,
+    super.key,
     required this.query,
     required this.onQueryChanged,
     required this.onClear,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return NeonCard(
-      margin: EdgeInsets.all(8),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: NeonCard(
         child: Row(
           children: [
             Icon(

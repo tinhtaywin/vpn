@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/traffic_history.dart';
 import '../services/storage_service.dart';
 
 class SettingsProvider with ChangeNotifier {

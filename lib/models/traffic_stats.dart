@@ -1,107 +1,113 @@
+
 class TrafficStats {
+  final int totalUploadBytes;
+  final int totalDownloadBytes;
+  final int currentUploadBytes;
+  final int currentDownloadBytes;
+  final DateTime startTime;
+  final DateTime lastUpdate;
   final int uploadBytes;
   final int downloadBytes;
   final DateTime timestamp;
 
   TrafficStats({
+    required this.totalUploadBytes,
+    required this.totalDownloadBytes,
+    required this.currentUploadBytes,
+    required this.currentDownloadBytes,
+    required this.startTime,
+    required this.lastUpdate,
     required this.uploadBytes,
     required this.downloadBytes,
     required this.timestamp,
   });
 
+  factory TrafficStats.fromJson(Map<String, dynamic> json) {
+    return TrafficStats(
+      totalUploadBytes: json['totalUploadBytes'] ?? 0,
+      totalDownloadBytes: json['totalDownloadBytes'] ?? 0,
+      currentUploadBytes: json['currentUploadBytes'] ?? 0,
+      currentDownloadBytes: json['currentDownloadBytes'] ?? 0,
+      startTime: DateTime.fromMillisecondsSinceEpoch(json['startTime']),
+      lastUpdate: DateTime.fromMillisecondsSinceEpoch(json['lastUpdate']),
+      uploadBytes: json['uploadBytes'] ?? 0,
+      downloadBytes: json['downloadBytes'] ?? 0,
+      timestamp: DateTime.fromMillisecondsSinceEpoch(json['timestamp'] ?? DateTime.now().millisecondsSinceEpoch),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'totalUploadBytes': totalUploadBytes,
+      'totalDownloadBytes': totalDownloadBytes,
+      'currentUploadBytes': currentUploadBytes,
+      'currentDownloadBytes': currentDownloadBytes,
+      'startTime': startTime.millisecondsSinceEpoch,
+      'lastUpdate': lastUpdate.millisecondsSinceEpoch,
+      'uploadBytes': uploadBytes,
+      'downloadBytes': downloadBytes,
+      'timestamp': timestamp.millisecondsSinceEpoch,
+    };
+  }
+
   TrafficStats copyWith({
+    int? totalUploadBytes,
+    int? totalDownloadBytes,
+    int? currentUploadBytes,
+    int? currentDownloadBytes,
+    DateTime? startTime,
+    DateTime? lastUpdate,
     int? uploadBytes,
     int? downloadBytes,
     DateTime? timestamp,
   }) {
     return TrafficStats(
+      totalUploadBytes: totalUploadBytes ?? this.totalUploadBytes,
+      totalDownloadBytes: totalDownloadBytes ?? this.totalDownloadBytes,
+      currentUploadBytes: currentUploadBytes ?? this.currentUploadBytes,
+      currentDownloadBytes: currentDownloadBytes ?? this.currentDownloadBytes,
+      startTime: startTime ?? this.startTime,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
       uploadBytes: uploadBytes ?? this.uploadBytes,
       downloadBytes: downloadBytes ?? this.downloadBytes,
       timestamp: timestamp ?? this.timestamp,
     );
   }
 
-  String get uploadFormatted => formatBytes(uploadBytes);
-  String get downloadFormatted => formatBytes(downloadBytes);
-  String get totalFormatted => formatBytes(uploadBytes + downloadBytes);
-
-  String formatBytes(int bytes) {
-    if (bytes < 1024) return '$bytes B';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(2)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
-    return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'uploadBytes': uploadBytes,
-      'downloadBytes': downloadBytes,
-      'timestamp': timestamp.toIso8601String(),
-    };
-  }
-
-  factory TrafficStats.fromJson(Map<String, dynamic> json) {
-    return TrafficStats(
-      uploadBytes: json['uploadBytes'] ?? 0,
-      downloadBytes: json['downloadBytes'] ?? 0,
-      timestamp: DateTime.parse(json['timestamp'] ?? DateTime.now().toIso8601String()),
-    );
-  }
+  int get totalTrafficBytes => totalUploadBytes + totalDownloadBytes;
+  int get currentTrafficBytes => currentUploadBytes + currentDownloadBytes;
 
   @override
   String toString() {
-    return 'TrafficStats(uploadBytes: $uploadBytes, downloadBytes: $downloadBytes, timestamp: $timestamp)';
-  }
-}
-
-class TrafficHistory {
-  final List<TrafficStats> hourlyStats;
-  final List<TrafficStats> dailyStats;
-
-  TrafficHistory({
-    required this.hourlyStats,
-    required this.dailyStats,
-  });
-
-  TrafficHistory copyWith({
-    List<TrafficStats>? hourlyStats,
-    List<TrafficStats>? dailyStats,
-  }) {
-    return TrafficHistory(
-      hourlyStats: hourlyStats ?? this.hourlyStats,
-      dailyStats: dailyStats ?? this.dailyStats,
-    );
-  }
-
-  factory TrafficHistory.empty() {
-    return TrafficHistory(
-      hourlyStats: [],
-      dailyStats: [],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'hourlyStats': hourlyStats.map((stat) => stat.toJson()).toList(),
-      'dailyStats': dailyStats.map((stat) => stat.toJson()).toList(),
-    };
-  }
-
-  factory TrafficHistory.fromJson(Map<String, dynamic> json) {
-    return TrafficHistory(
-      hourlyStats: (json['hourlyStats'] as List?)
-              ?.map((e) => TrafficStats.fromJson(e))
-              .toList() ??
-          [],
-      dailyStats: (json['dailyStats'] as List?)
-              ?.map((e) => TrafficStats.fromJson(e))
-              .toList() ??
-          [],
-    );
+    return 'TrafficStats{totalUploadBytes: $totalUploadBytes, totalDownloadBytes: $totalDownloadBytes, currentUploadBytes: $currentUploadBytes, currentDownloadBytes: $currentDownloadBytes, startTime: $startTime, lastUpdate: $lastUpdate}';
   }
 
   @override
-  String toString() {
-    return 'TrafficHistory(hourlyStats: $hourlyStats, dailyStats: $dailyStats)';
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    
+    return other is TrafficStats &&
+           other.totalUploadBytes == totalUploadBytes &&
+           other.totalDownloadBytes == totalDownloadBytes &&
+           other.currentUploadBytes == currentUploadBytes &&
+           other.currentDownloadBytes == currentDownloadBytes &&
+           other.startTime == startTime &&
+           other.lastUpdate == lastUpdate &&
+           other.uploadBytes == uploadBytes &&
+           other.downloadBytes == downloadBytes &&
+           other.timestamp == timestamp;
+  }
+
+  @override
+  int get hashCode {
+    return totalUploadBytes.hashCode ^
+           totalDownloadBytes.hashCode ^
+           currentUploadBytes.hashCode ^
+           currentDownloadBytes.hashCode ^
+           startTime.hashCode ^
+           lastUpdate.hashCode ^
+           uploadBytes.hashCode ^
+           downloadBytes.hashCode ^
+           timestamp.hashCode;
   }
 }

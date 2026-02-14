@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_glow/flutter_glow.dart';
 import '../theme/app_theme.dart';
 
 class NeonButton extends StatelessWidget {
@@ -17,7 +16,7 @@ class NeonButton extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
 
   const NeonButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.color,
@@ -30,7 +29,7 @@ class NeonButton extends StatelessWidget {
     this.iconSize = 24,
     this.padding,
     this.margin,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +38,17 @@ class NeonButton extends StatelessWidget {
 
     return Padding(
       padding: margin ?? EdgeInsets.zero,
-      child: GlowButton(
+      child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
-        color: buttonColor,
-        glowColor: buttonColor.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(borderRadius),
-        padding: padding ?? EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        width: width,
-        height: height,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: buttonColor,
+          foregroundColor: buttonTextColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          padding: padding ?? EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          minimumSize: Size(width ?? double.infinity, height!),
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -93,7 +95,7 @@ class NeonToggleButton extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
 
   const NeonToggleButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.isSelected,
     required this.onPressed,
@@ -103,7 +105,7 @@ class NeonToggleButton extends StatelessWidget {
     this.borderRadius = 12,
     this.padding,
     this.margin,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -113,14 +115,16 @@ class NeonToggleButton extends StatelessWidget {
 
     return Padding(
       padding: margin ?? EdgeInsets.zero,
-      child: GlowButton(
+      child: ElevatedButton(
         onPressed: onPressed,
-        color: isSelected ? selectedBtnColor : unselectedBtnColor,
-        glowColor: isSelected ? selectedBtnColor.withOpacity(0.5) : Colors.transparent,
-        borderRadius: BorderRadius.circular(borderRadius),
-        padding: padding ?? EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        borderWidth: isSelected ? 0 : 2,
-        borderColor: AppTheme.borderColor,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected ? selectedBtnColor : unselectedBtnColor,
+          foregroundColor: isSelected ? buttonTextColor : AppTheme.secondaryTextColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          padding: padding ?? EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        ),
         child: Text(
           text,
           style: AppTheme.neonSecondary.copyWith(
@@ -143,7 +147,7 @@ class NeonIconButton extends StatelessWidget {
   final String? tooltip;
 
   const NeonIconButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.onPressed,
     this.color,
@@ -151,27 +155,29 @@ class NeonIconButton extends StatelessWidget {
     this.size = 48,
     this.iconSize = 24,
     this.tooltip,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final buttonColor = color ?? AppTheme.primaryColor;
     final iconBtnColor = iconColor ?? AppTheme.backgroundColor;
 
-    return GlowButton(
+    return ElevatedButton(
       onPressed: onPressed,
-      color: buttonColor,
-      glowColor: buttonColor.withOpacity(0.5),
-      borderRadius: BorderRadius.circular(size / 2),
-      padding: EdgeInsets.all((size - iconSize) / 2),
-      width: size,
-      height: size,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: buttonColor,
+        foregroundColor: iconBtnColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(size / 2),
+        ),
+        padding: EdgeInsets.all((size - iconSize) / 2),
+        minimumSize: Size(size, size),
+      ),
       child: Icon(
         icon,
         size: iconSize,
         color: iconBtnColor,
       ),
-      tooltip: tooltip,
     );
   }
 }
